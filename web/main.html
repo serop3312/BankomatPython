@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sber</title>
+  <script src=""eel.js></script>
+  <link rel="icon" type="image/png" href="sber.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background: linear-gradient(145deg, #1a2639 0%, #2c3e50 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .atm {
+      background: linear-gradient(135deg, #3a4a5e, #1e2b38);
+      border-radius: 40px 40px 30px 30px;
+      padding: 30px 30px 25px;
+      box-shadow:
+        0 20px 30px rgba(0, 0, 0, 0.7),
+        inset 0 0 0 2px #5b6f84,
+        inset 0 0 20px #0a1015;
+      width: 900px;
+      max-width: 100%;
+      border-bottom: 8px solid #0f171f;
+    }
+
+    .atm-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 0 10px;
+    }
+
+    .bank-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: #f1c40f;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 28px;
+      font-weight: 800;
+      color: #1e2b38;
+      box-shadow: 0 0 0 3px #8395a7, 0 5px 0 #0f171f;
+    }
+
+    .bank-name {
+      color: #e0e9f0;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-shadow: 0 2px 0 #0f171f;
+    }
+
+    .bank-name span {
+      color: #f1c40f;
+      font-weight: 300;
+    }
+
+    .card-slot {
+      background: #1b242e;
+      height: 45px;
+      width: 160px;
+      border-radius: 8px;
+      box-shadow: inset 0 5px 10px #0b1116, 0 2px 0 #5b6f84;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      color: #8e9eae;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+
+    .card-slot::before {
+      content: "💳";
+      font-size: 22px;
+      margin-right: 12px;
+      opacity: 0.7;
+    }
+
+    .atm-main {
+      display: flex;
+      gap: 25px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .screen {
+      flex: 2;
+      min-width: 380px;
+      background: #0a121c;
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow:
+        inset 0 0 0 4px #5b6f84,
+        inset 0 0 30px #000000,
+        0 10px 15px #0b1116;
+      position: relative;
+    }
+
+    .screen-inner {
+      background: #d9e6f2;
+      border-radius: 12px;
+      padding: 22px 20px;
+      height: 100%;
+      min-height: 280px;
+      box-shadow: inset 0 0 10px #6a7b8c;
+      display: flex;
+      flex-direction: column;
+      color: #0a1a2a;
+      font-weight: 500;
+    }
+
+    .screen-header {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 2px solid #2c3e50;
+      padding-bottom: 10px;
+      margin-bottom: 18px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e3b5c;
+    }
+
+    .balance {
+      font-size: 30px;
+      font-weight: 800;
+      color: #0b3b5e;
+      letter-spacing: 1px;
+      margin: 5px 0 15px;
+      background: #c0d4e6;
+      display: inline-block;
+      padding: 5px 20px;
+      border-radius: 40px;
+      box-shadow: inset 0 2px 5px #8da3b8;
+    }
+
+    .menu-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: auto;
+    }
+
+    .screen-btn {
+      background: #2e4b6b;
+      border: none;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 40px;
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #0d1f2e, 0 6px 8px rgba(0, 0, 0, 0.3);
+      transition: 0.1s ease;
+      letter-spacing: 0.5px;
+      width: 100%;
+      text-align: left;
+    }
+
+    .screen-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #0d1f2e, 0 3px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .screen-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .screen-btn .btn-icon {
+      font-size: 20px;
+      margin-right: 12px;
+    }
+
+    .screen-btn .arrow {
+      font-size: 18px;
+      opacity: 0.9;
+    }
+
+    .atm-peripherals {
+      flex: 1;
+      min-width: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .cash-dispenser {
+      background: #1b242e;
+      border-radius: 18px;
+      padding: 15px 15px 25px;
+      box-shadow:
+        inset 0 0 0 3px #5b6f84,
+        inset 0 10px 20px #000000,
+        0 8px 0 #0b1116;
+      position: relative;
+    }
+
+    .cash-dispenser::before {
+      content: "💵";
+      font-size: 30px;
+      display: block;
+      text-align: center;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 4px 2px #000000);
+    }
+
+    .cash-slot {
+      background: #0b1116;
+      height: 35px;
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: inset 0 8px 12px #000000, 0 2px 0 #3a4a5e;
+      margin-top: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #5b6f84;
+      font-size: 12px;
+      letter-spacing: 2px;
+      transition: 0.3s;
+    }
+
+    .cash-slot.active {
+      background: #1d3e2c;
+      box-shadow: inset 0 8px 12px #0a1f14, 0 0 15px #2ecc71;
+      color: #a3e4c7;
+      animation: pulse 0.6s infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { box-shadow: inset 0 8px 12px #0a1f14, 0 0 8px #2ecc71; }
+      to { box-shadow: inset 0 8px 12px #0a1f14, 0 0 22px #2ecc71; }
+    }
+
+    .cash-slot span {
+      background: #2f3f4f;
+      padding: 2px 14px;
+      border-radius: 20px;
+      font-weight: 600;
+      text-shadow: 0 1px 0 black;
+    }
+
+    .atm-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 10px 5px;
+      border-top: 3px solid #1b242e;
+      margin-top: 10px;
+    }
+
+    .numeric-pad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      background: #1e2b38;
+      padding: 15px 20px;
+      border-radius: 30px;
+      box-shadow: inset 0 0 0 3px #3a4a5e, 0 6px 0 #0b1116;
+    }
+
+    .num-btn {
+      background: #3e5369;
+      border: none;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      color: white;
+      font-size: 22px;
+      font-weight: 700;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 5px 0 #1a262f, 0 7px 10px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+      transition: 0.08s linear;
+      text-shadow: 0 2px 0 #0b1116;
+    }
+
+    .num-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 #1a262f, 0 5px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .num-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-left: 15px;
+    }
+
+    .action-btn {
+      background: #c44536;
+      border: none;
+      color: white;
+      padding: 12px 30px;
+      border-radius: 40px;
+      font-size: 18px;
+      font-weight: 700;
+      box-shadow: 0 6px 0 #70281c, 0 8px 12px black;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-align: center;
+      transition: 0.08s linear;
+      min-width: 160px;
+    }
+
+    .action-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #70281c, 0 5px 8px black;
+    }
+
+    .action-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .action-btn.green {
+      background: #2e7d5e;
+      box-shadow: 0 6px 0 #1c4a37, 0 8px 12px black;
+    }
+
+    .action-btn.green:active {
+      box-shadow: 0 2px 0 #1c4a37, 0 5px 8px black;
+    }
+
+    .action-btn.yellow {
+      background: #d4a017;
+      box-shadow: 0 6px 0 #7a5e0e, 0 8px 12px black;
+      color: #1e2b38;
+    }
+
+    .action-btn.yellow:active {
+      box-shadow: 0 2px 0 #7a5e0e, 0 5px 8px black;
+    }
+
+    .indicators {
+      display: flex;
+      gap: 15px;
+      margin: 10px 0 0 10px;
+    }
+
+    .led {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #1b242e;
+      box-shadow: inset 0 0 5px black, 0 0 5px #000000;
+      transition: 0.3s;
+    }
+
+    .led.green {
+      background: #2ecc71;
+      box-shadow: 0 0 10px #2ecc71, inset 0 0 5px #a3e4c7;
+    }
+
+    .led.orange {
+      background: #e67e22;
+      box-shadow: 0 0 10px #e67e22, inset 0 0 5px #f7c08a;
+    }
+
+    .led.red {
+      background: #e74c3c;
+      box-shadow: 0 0 10px #e74c3c, inset 0 0 5px #f5b7b1;
+    }
+
+    .input-display {
+      background: #1e3b5c;
+      color: #f1c40f;
+      font-family: 'Courier New', monospace;
+      font-size: 26px;
+      font-weight: 700;
+      padding: 8px 18px;
+      border-radius: 8px;
+      letter-spacing: 4px;
+      text-align: right;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      box-shadow: inset 0 3px 8px #0a1a2a;
+      margin-bottom: 15px;
+      overflow: hidden;
+    }
+
+    .input-display .placeholder {
+      color: #6a8aaa;
+      font-size: 14px;
+      letter-spacing: 1px;
+      font-weight: 400;
+    }
+
+    .message {
+      font-size: 14px;
+      color: #1e3b5c;
+      font-weight: 500;
+      margin-bottom: 10px;
+      min-height: 20px;
+    }
+
+    .message.error {
+      color: #c44536;
+      font-weight: 700;
+    }
+
+    .message.success {
+      color: #2e7d5e;
+      font-weight: 700;
+    }
+
+    .banknotes {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .banknote {
+      background: #a3e4c7;
+      color: #1e3b5c;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 2px 0 #6aab8a;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (max-width: 800px) {
+      .atm { padding: 20px 15px; }
+      .atm-main { flex-direction: column; }
+      .screen { min-width: auto; }
+      .numeric-pad { gap: 8px; padding: 12px 14px; }
+      .num-btn { width: 48px; height: 48px; font-size: 18px; }
+      .action-btn { padding: 10px 18px; font-size: 14px; min-width: 120px; }
+    }
+
+    @media (max-width: 500px) {
+      .atm-footer { flex-direction: column; gap: 20px; }
+      .balance { font-size: 24px; }
+      .action-buttons { margin-left: 0; width: 100%; }
+      .action-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="atm">
+    <div class="atm-header">
+      <div class="bank-logo">
+        <div class="logo-icon">₽</div>
+        <div class="bank-name">БАНК<span>ОМАТ</span></div>
+      </div>
+      <div class="card-slot" id="cardSlot">ВСТАВЬТЕ КАРТУ</div>
+    </div>
+
+    <div class="atm-main">
+      <div class="screen">
+        <div class="screen-inner">
+          <div class="screen-header">
+            <span id="screenTitle">СЧЁТ: *4321</span>
+            <span id="screenLock">🔒</span>
+          </div>
+          <div class="balance" id="balanceDisplay">12 450 ₽</div>
+
+          <div class="input-display" id="inputDisplay">
+            <span class="placeholder">— — — —</span>
+          </div>
+
+          <div class="message" id="message">Вставьте карту для начала работы</div>
+
+          <div class="menu-buttons" id="menuButtons">
+            <button class="screen-btn" data-action="withdraw" disabled>
+              <span><span class="btn-icon">💳</span> Снять наличные</span>
+              <span class="arrow">▶</span>
+            </button>
+            <button class="screen-btn" data-action="balance" disabled>
+              <span><span class="btn-icon">📊</span> Проверить баланс</span>
+              <span class="arrow">▶</span>
+            </button>
+            <button class="screen-btn" data-action="deposit" disabled>
+              <span><span class="btn-icon">📥</span> Внести наличные</span>
+              <span class="arrow">▶</span>
+            </button>
+          </div>
+
+          <div class="banknotes" id="banknotes"></div>
+        </div>
+      </div>
+
+      <div class="atm-peripherals">
+        <div class="cash-dispenser">
+          <div class="cash-slot" id="cashSlot">
+            <span id="cashSlotText">ВЫДАЧА КУПЮР</span>
+          </div>
+        </div>
+        <div class="indicators">
+          <div class="led green" id="ledReady"></div>
+          <div class="led" id="ledCard"></div>
+          <div class="led" id="ledBusy"></div>
+          <div class="led" id="ledError"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="atm-footer">
+      <div class="numeric-pad" id="numericPad">
+        <button class="num-btn" data-num="1">1</button>
+        <button class="num-btn" data-num="2">2</button>
+        <button class="num-btn" data-num="3">3</button>
+        <button class="num-btn" data-num="4">4</button>
+        <button class="num-btn" data-num="5">5</button>
+        <button class="num-btn" data-num="6">6</button>
+        <button class="num-btn" data-num="7">7</button>
+        <button class="num-btn" data-num="8">8</button>
+        <button class="num-btn" data-num="9">9</button>
+        <button class="num-btn" data-num="*">*</button>
+        <button class="num-btn" data-num="0">0</button>
+        <button class="num-btn" data-num="#">#</button>
+      </div>
+      <div class="action-buttons">
+        <button class="action-btn" id="btnCancel">Отмена</button>
+        <button class="action-btn yellow" id="btnClear">Очистить</button>
+        <button class="action-btn green" id="btnEnter">Ввод</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== СОСТОЯНИЕ =====
+    const state = {
+      balance: 12450,
+      cardInserted: false,
+      currentMode: 'idle', // idle | menu | withdraw | deposit | balance
+      inputValue: '',
+      cash: 0
+    };
+
+    const AVAILABLE_BANKNOTES = [50, 100, 200, 500, 1000, 2000, 5000];
+
+    // ===== DOM =====
+    const els = {
+      cardSlot: document.getElementById('cardSlot'),
+      balanceDisplay: document.getElementById('balanceDisplay'),
+      inputDisplay: document.getElementById('inputDisplay'),
+      message: document.getElementById('message'),
+      menuButtons: document.getElementById('menuButtons'),
+      banknotes: document.getElementById('banknotes'),
+      cashSlot: document.getElementById('cashSlot'),
+      cashSlotText: document.getElementById('cashSlotText'),
+      screenTitle: document.getElementById('screenTitle'),
+      screenLock: document.getElementById('screenLock'),
+      ledReady: document.getElementById('ledReady'),
+      ledCard: document.getElementById('ledCard'),
+      ledBusy: document.getElementById('ledBusy'),
+      ledError: document.getElementById('ledError'),
+      btnCancel: document.getElementById('btnCancel'),
+      btnClear: document.getElementById('btnClear'),
+      btnEnter: document.getElementById('btnEnter'),
+      numericPad: document.getElementById('numericPad'),
+    };
+
+    const screenButtons = document.querySelectorAll('.screen-btn');
+    const numButtons = document.querySelectorAll('.num-btn');
+
+    // ===== ФОРМАТИРОВАНИЕ =====
+    function formatMoney(n) {
+      return n.toLocaleString('ru-RU') + ' ₽';
+    }
+
+    // ===== UI ОБНОВЛЕНИЕ =====
+    function updateBalance() {
+      els.balanceDisplay.textContent = formatMoney(state.balance);
+    }
+
+    function setMessage(text, type = '') {
+      els.message.textContent = text;
+      els.message.className = 'message' + (type ? ' ' + type : '');
+    }
+
+    function setInputDisplay() {
+      if (state.currentMode === 'withdraw' || state.currentMode === 'deposit') {
+        els.inputDisplay.innerHTML = state.inputValue
+          ? state.inputValue
+          : '<span class="placeholder">— — — —</span>';
+      } else {
+        els.inputDisplay.innerHTML = '<span class="placeholder">— — — —</span>';
+      }
+    }
+
+    function updateLeDs() {
+      els.ledReady.className = 'led' + (state.cardInserted && state.currentMode === 'idle' ? ' green' : '');
+      els.ledCard.className = 'led' + (state.cardInserted ? ' green' : '');
+      els.ledBusy.className = 'led' + (state.currentMode !== 'idle' && state.currentMode !== 'menu' ? ' orange' : '');
+      els.ledError.className = 'led' + (state.currentMode === 'error' ? ' red' : '');
+    }
+
+    function enableScreenButtons(enabled) {
+      screenButtons.forEach(btn => {
+        btn.disabled = !enabled;
+      });
+    }
+
+    function enableNumericPad(enabled) {
+      numButtons.forEach(btn => {
+        btn.disabled = !enabled;
+      });
+    }
+
+    function updateUI() {
+      updateBalance();
+      setInputDisplay();
+      updateLeDs();
+      els.screenTitle.textContent = state.cardInserted ? 'СЧЁТ: *4321' : 'КАРТА НЕ ВСТАВЛЕНА';
+      els.screenLock.textContent = state.cardInserted ? '🔓' : '🔒';
+      els.cardSlot.textContent = state.cardInserted ? 'КАРТА ВСТАВЛЕНА' : 'ВСТАВЬТЕ КАРТУ';
+      els.cardSlot.style.color = state.cardInserted ? '#a3e4c7' : '#8e9eae';
+
+      const canUse = state.cardInserted && state.currentMode === 'menu';
+      enableScreenButtons(canUse);
+
+      const canInput = state.cardInserted && (state.currentMode === 'withdraw' || state.currentMode === 'deposit');
+      enableNumericPad(canInput);
+
+      els.btnCancel.disabled = !state.cardInserted;
+      els.btnClear.disabled = !canInput;
+      els.btnEnter.disabled = !canInput || !state.inputValue;
+
+      if (!state.cardInserted) {
+        setMessage('Вставьте карту для начала работы');
+      }
+    }
+
+    // ===== ВЗАИМОДЕЙСТВИЕ С КАРТОЙ =====
+    function insertCard() {
+      if (state.cardInserted) {
+        // извлечь карту
+        state.cardInserted = false;
+        state.currentMode = 'idle';
+        state.inputValue = '';
+        clearCash();
+        setMessage('Карта извлечена. Спасибо!', 'success');
+        updateUI();
+        return;
+      }
+      state.cardInserted = true;
+      state.currentMode = 'menu';
+      state.inputValue = '';
+      setMessage('Карта принята. Выберите операцию');
+      updateUI();
+    }
+
+    // ===== ОПЕРАЦИИ =====
+    function startWithdraw() {
+      state.currentMode = 'withdraw';
+      state.inputValue = '';
+      setMessage('Введите сумму для снятия (кратно 50 ₽)');
+      updateUI();
+    }
+
+    function startDeposit() {
+      state.currentMode = 'deposit';
+      state.inputValue = '';
+      setMessage('Введите сумму для внесения');
+      updateUI();
+    }
+
+    function checkBalance() {
+      state.currentMode = 'balance';
+      setMessage('Баланс: ' + formatMoney(state.balance), 'success');
+      updateUI();
+      setTimeout(() => {
+        if (state.cardInserted) {
+          state.currentMode = 'menu';
+          setMessage('Выберите операцию');
+          updateUI();
+        }
+      }, 2500);
+    }
+
+    // ===== КНОПКИ ЭКРАНА =====
+    screenButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const action = btn.dataset.action;
+        if (action === 'withdraw') startWithdraw();
+        else if (action === 'balance') checkBalance();
+        else if (action === 'deposit') startDeposit();
+      });
+    });
+
+    // ===== ЦИФРОВАЯ КЛАВИАТУРА =====
+    numButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!state.cardInserted) return;
+        if (state.currentMode !== 'withdraw' && state.currentMode !== 'deposit') return;
+
+        const num = btn.dataset.num;
+        if (num === '*' || num === '#') return;
+
+        if (state.inputValue.length >= 6) return;
+        if (state.inputValue === '' && num === '0') return;
+
+        state.inputValue += num;
+        updateUI();
+      });
+    });
+
+    // ===== ВВОД =====
+    els.btnEnter.addEventListener('click', () => {
+      const amount = parseInt(state.inputValue, 10);
+      if (!amount || amount <= 0) {
+        setMessage('Введите корректную сумму', 'error');
+        return;
+      }
+
+      if (state.currentMode === 'withdraw') {
+        if (amount % 50 !== 0) {
+          setMessage('Сумма должна быть кратна 50 ₽', 'error');
+          return;
+        }
+        if (amount > state.balance) {
+          setMessage('Недостаточно средств на счёте', 'error');
+          return;
+        }
+
+        // выдаём наличные
+        state.balance -= amount;
+        state.currentMode = 'menu';
+        state.inputValue = '';
+        dispenseCash(amount);
+        setMessage('Выдано ' + formatMoney(amount), 'success');
+        updateUI();
+
+        setTimeout(() => {
+          if (state.currentMode === 'menu') {
+            setMessage('Выберите операцию');
+          }
+        }, 3000);
+
+      } else if (state.currentMode === 'deposit') {
+        if (amount > 500000) {
+          setMessage('Максимальная сумма внесения — 500 000 ₽', 'error');
+          return;
+        }
+        state.balance += amount;
+        state.currentMode = 'menu';
+        state.inputValue = '';
+        setMessage('Внесено ' + formatMoney(amount), 'success');
+        updateUI();
+
+        setTimeout(() => {
+          if (state.currentMode === 'menu') {
+            setMessage('Выберите операцию');
+          }
+        }, 3000);
+      }
+    });
+
+    // ===== ОЧИСТИТЬ =====
+    els.btnClear.addEventListener('click', () => {
+      state.inputValue = '';
+      setMessage('Введите сумму');
+      updateUI();
+    });
+
+    // ===== ОТМЕНА =====
+    els.btnCancel.addEventListener('click', () => {
+      if (!state.cardInserted) return;
+      state.currentMode = 'menu';
+      state.inputValue = '';
+      clearCash();
+      setMessage('Операция отменена. Выберите операцию');
+      updateUI();
+    });
+
+    // ===== ВЫДАЧА НАЛИЧНЫХ =====
+    function dispenseCash(amount) {
+      // разбиваем на купюры
+      const notes = [];
+      let remaining = amount;
+      for (let i = AVAILABLE_BANKNOTES.length - 1; i >= 0; i--) {
+        const note = AVAILABLE_BANKNOTES[i];
+        while (remaining >= note) {
+          notes.push(note);
+          remaining -= note;
+        }
+      }
+
+      els.cashSlot.classList.add('active');
+      els.cashSlotText.textContent = 'ВЫДАЧА...';
+
+      els.banknotes.innerHTML = '';
+      notes.forEach((n, idx) => {
+        const el = document.createElement('div');
+        el.className = 'banknote';
+        el.textContent = n + ' ₽';
+        el.style.animationDelay = (idx * 0.1) + 's';
+        els.banknotes.appendChild(el);
+      });
+
+      setTimeout(() => {
+        els.cashSlot.classList.remove('active');
+        els.cashSlotText.textContent = 'ВЫДАЧА КУПЮР';
+      }, 2500);
+
+      setTimeout(() => {
+        els.banknotes.innerHTML = '';
+      }, 5000);
+    }
+
+    function clearCash() {
+      els.banknotes.innerHTML = '';
+      els.cashSlot.classList.remove('active');
+      els.cashSlotText.textContent = 'ВЫДАЧА КУПЮР';
+    }
+
+    // ===== КЛИК ПО СЛОТУ КАРТЫ =====
+    els.cardSlot.addEventListener('click', insertCard);
+    els.cardSlot.style.cursor = 'pointer';
+
+    // ===== КЛАВИАТУРА (физ.) =====
+    document.addEventListener('keydown', (e) => {
+      if (e.key >= '0' && e.key <= '9') {
+        const btn = document.querySelector(`.num-btn[data-num="${e.key}"]`);
+        if (btn && !btn.disabled) btn.click();
+      } else if (e.key === 'Enter') {
+        if (!els.btnEnter.disabled) els.btnEnter.click();
+      } else if (e.key === 'Escape') {
+        if (!els.btnCancel.disabled) els.btnCancel.click();
+      } else if (e.key === 'Backspace' || e.key === 'Delete') {
+        if (!els.btnClear.disabled) els.btnClear.click();
+      }
+    });
+
+    // ===== ИНИЦИАЛИЗАЦИЯ =====
+    updateUI();
+  </script>
+</body>
+</html>

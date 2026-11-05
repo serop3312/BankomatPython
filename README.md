@@ -1,1 +1,3 @@
 # BankomatPython
+
+pip install Eel
